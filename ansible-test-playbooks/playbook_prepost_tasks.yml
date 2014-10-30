@@ -1,0 +1,36 @@
+# Demonstrate pre/post-tasks
+---
+- hosts: myhosts
+
+  pre_tasks:
+  - name: Run a pre-task command
+    command: echo "I am a pre-task"
+  - name: Run another pre-task command
+    debug: msg="This is another pre-task command"
+
+  tasks:
+  - name: Run a command
+    command: ls -l
+    register: outputVar
+  - name: Clear dirs
+    file: name=/tmp/{{ item }} state=absent
+    with_items:
+    - dir1
+    - dir2
+    - dir3
+    - dir4
+    - dir5
+  - name: Make dirs
+    file: name=/tmp/{{ item }} state=directory
+    with_items:
+    - dir1
+    - dir2
+    - dir3
+    - dir4
+    - dir5
+
+  post_tasks:
+  - name: Run a post-task command
+    command: echo "I am a post-task"
+  - name: Run another post-task command
+    debug: msg="This is another post-task command"
