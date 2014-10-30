@@ -1,0 +1,33 @@
+# Demonstrate polling tasks
+---
+- hosts: myhosts
+  tasks:
+  - name: Fire and forget op, allow to run for 50s
+    command: sleep 30
+    async: 50
+    poll: 0
+
+  - name: Sleep - fire and forget task
+    command: sleep 60
+    async: 10000
+    poll: 0
+    register: sleepy_sleeperx
+
+  - name: Whats the job id?
+    debug: msg="Job id = {{ sleepy_sleeperx.ansible_job_id }}"
+
+# Does not work at the moment - possibly a Ansible bug
+#   - name: Check on sleeper task
+#     async_status: jid={{ sleepy_sleeperx.ansible_job_id }}
+#     register: job_result
+#     until: job_result.finished
+#     retries: 30
+
+  - name: Sleep and poll
+    command: sleep 180
+    async: 1000
+    poll: 60
+    register: sleepy_sleeper
+
+  - name: Did it work?
+    debug: msg="Result was {{ sleepy_sleeper }}"
