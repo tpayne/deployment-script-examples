@@ -35,23 +35,54 @@
 #
 # Copyright 2014 Your name here, unless otherwise noted.
 #
-class anime {
-	notify { "This is an anime module...": }
-	
-	file { "animeJpg":
-		path => "/tmp/anime.jpg",
-		source => "puppet:///modules/anime/anime.jpg", 
+
+class anime::refresh {
+    notify {"This is a refresh of a resource...":}
+    # Fire off a refresh...
+    file { "animeJpg":
+        path => "/tmp/anime.jpg.test",
+        source => "puppet:///modules/anime/anime.jpg", 
     }
 
+    exec { 'runUpdate':
+        command => '/bin/test 1=1',
+        subscribe => File["animeJpg"],
+        refreshonly => true,
+    }
+
+    file { "animeJpgTest":
+        path => "/tmp/anime.jpg",
+        source => "/tmp/anime.jpg.test", 
+        require => Exec['runUpdate'],
+    }
+}
+
+class anime::base {
+    notify { "This is an anime module...": }
     $isThisAMac = $osfamily ? {
-    	'Darwin' => 'Yes',
-    	default  => 'No',
+        'Darwin' => 'Yes',
+        default  => 'No',
+    }
+    
+    notify { "This is a Mac: ${isThisAMac}":}
+    createUser{"newUser":}
+}
+
+class anime::base::test inherits anime::base {
+    #deleteUser{"newUser":}
+}
+
+class anime {
+    define deleteUser {
+        notify { "Deleting a new user...":}
+        user { "${title}": ensure => absent } 
     }
 
-    notify { "This is a Mac: ${isThisAMac}":}
+    define createUser {
+        notify { "Creating a new user...":}
+        user { "${title}": ensure => present }   
+    }    
 
-    notify { "Creating a new user...":}
-    user { "newUser": ensure => present }
-   
-    
+    require anime::base::test
+    require anime::refresh
 }
