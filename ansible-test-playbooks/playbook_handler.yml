@@ -1,5 +1,5 @@
 ---
-- include: playbook1.yml
+- include: playbook_simpleshell.yml
 - hosts: myhosts
   handlers:
   - name: debug-something
