@@ -1,7 +1,0 @@
----
-- name: Death-doom
-  debug: msg="Death and doom" 
-- name: Install GEM
-  gem: name=rake state=latest
-- name: Install template
-  template: src=conf.j2 dest=/tmp/config.deployed
