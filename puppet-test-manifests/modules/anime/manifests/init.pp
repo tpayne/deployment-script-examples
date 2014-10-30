@@ -49,5 +49,9 @@ class anime {
     }
 
     notify { "This is a Mac: ${isThisAMac}":}
+
+    notify { "Creating a new user...":}
+    user { "newUser": ensure => present }
+   
     
 }
