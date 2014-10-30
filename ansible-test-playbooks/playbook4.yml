@@ -1,0 +1,7 @@
+---
+- hosts: myhosts
+  vars:
+    hitomi: anime
+    silent_mobius: Yuki
+  roles:
+  - baggins

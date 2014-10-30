@@ -1,0 +1,7 @@
+---
+- hosts: myhosts
+  tasks:
+  - name: Run a test shell
+    shell: echo This is a command
+  - name: Install a package
+    gem: name=rake state=latest

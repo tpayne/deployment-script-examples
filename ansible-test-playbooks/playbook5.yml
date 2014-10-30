@@ -1,0 +1,18 @@
+---
+- hosts: myhosts
+  vars:
+    hitomi: anime
+    silent_mobius: Yuki
+  roles:
+  - aRole
+  tasks:
+  - name: Exterminate-1
+    action: exterminate.py darlek=the-controller exterminate_mode=bychainsaw
+    register: exterminatedBy
+  - name: Extermined-by
+    debug: msg="{{exterminatedBy}}"
+  - name: Exterminate-2
+    action: exterminate.py darlek=the-controller exterminate_mode=bydarlek
+    register: exterminatedBy
+  - name: Extermined-by
+    debug: msg="{{exterminatedBy}}"
