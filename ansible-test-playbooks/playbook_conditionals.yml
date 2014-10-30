@@ -1,0 +1,41 @@
+# Demonstrate conditional tasks
+---
+- hosts: myhosts
+  tasks:
+  - name: Run a command
+    command: ls -l
+    register: outputVar
+  - name: Ruby version?
+    debug: msg="Ruby version {{ facter_rubyversion }}"
+  # Is this a mac?
+  - name: Is this a mac?
+    debug: msg="This is a mac"
+    when: ansible_os_family == "Darwin"
+  - name: Is this not a mac?
+    debug: msg="This is not a mac"
+    when: ansible_os_family != "Darwin"
+  # Is this a mac?
+  - name: Is this a mac running ruby 2?
+    debug: msg="This is a mac running ruby 2"
+    when: ansible_os_family == "Darwin" and facter_rubyversion == "2.0.0"
+  # Failed
+  - command: /bin/false
+    register: result
+    ignore_errors: True
+  - debug: msg="Result failed"
+    when: result|failed
+  - debug: msg="Result successful"
+    when: result|success
+  - debug: msg="Result skipped"
+    when: result|skipped
+  # Worked
+  - command: test 1=1
+    register: result1
+    ignore_errors: True
+  - debug: msg="Result failed"
+    when: result1|failed
+  - debug: msg="Result successful"
+    when: result1|success
+  - debug: msg="Result skipped"
+    when: result1|skipped
+
