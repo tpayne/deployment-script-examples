@@ -97,13 +97,13 @@ def main():
         raise
 
     # If an output file has been specified, then create one
-    if (outputfile):
+    if (outputfile) and outputfile != 'STDOUT':
         ofs = open(outputfile, "w")
  
     sqlQuery = ''
     cur = con.cursor()
     with open(inputfile, 'r') as inp:
-        lineNo = 1
+        lineNo = 0
         for line in inp:
             lineNo = lineNo + 1
             line = line.strip()
@@ -126,8 +126,10 @@ def main():
                     module.fail_json(msg=mess, changed=False)
                     raise
 
-                if (outputfile):
+                if (outputfile) and outputfile != 'STDOUT':
                     ofs.write(sqlQuery+"\nCommand processed\n")
+                elif (outputfile) and outputfile == 'STDOUT':
+                    mess = mess + sqlQuery+"\nCommand processed\n"
 
                 sqlQuery = ''
 
@@ -135,7 +137,7 @@ def main():
                 sqlQuery = sqlQuery + line
     
     try:
-        if (outputfile):
+        if (outputfile) and outputfile != 'STDOUT':
             ofs.close()
         inp.close()
         cur.close()
@@ -143,7 +145,9 @@ def main():
     except cx_Oracle.DatabaseError:
         pass
 
-    mess = "SQL file processed"
+    if not outputfile:
+        mess = "SQL file processed"
+
     module.exit_json(msg=mess, changed=True)
 
 from ansible.module_utils.basic import *

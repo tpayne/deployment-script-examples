@@ -8,8 +8,7 @@
   tasks:
   - name: SQLFile-1
     environment: env
-    action: oracle.py hostName=192.168.0.17 sqlUser=pcms_sys sqlPwd=pcms_sys port=1521 tns=dim12 sqlFile=/tmp/i.sql logFile=/tmp/outsql.log
+    action: oracle.py hostName=192.168.0.17 sqlUser=pcms_sys sqlPwd=pcms_sys port=1521 tns=dim12 sqlFile=/tmp/i.sql logFile=STDOUT
     register: sqlOut
-  - name: sqlFile-by
+  - name: Output
     debug: msg="{{sqlOut}}"
- 
