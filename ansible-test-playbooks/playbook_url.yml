@@ -1,0 +1,21 @@
+---
+- hosts: myhosts
+  tasks:
+  - name: Get files from a URL
+    get_url: url=http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip dest=/tmp/jboss-as-7.1.1.Final.zip
+    register: outputReg
+  - name: Show output
+    debug: msg="Output was {{ outputReg }}"
+  - name: Set perms
+    file: path=/tmp/jboss-as-7.1.1.Final.zip mode=0777
+  - name: Checkout
+    command: chdir=/tmp /bin/mv jboss-as-7.1.1.Final.zip jboss7.zip
+  - name: Bye Bye
+    file: path=/tmp/jboss-as-7.1.1.Final state=absent
+    ignore_errors: yes
+  - name: Unpack
+    command: chdir=/tmp unzip -q jboss7.zip 
+  - name: Bye Bye
+    file: path=/tmp/jboss7.zip state=absent
+  - name: Bye Bye 2
+    file: path=/tmp/jboss-as-7.1.1.Final state=absent
