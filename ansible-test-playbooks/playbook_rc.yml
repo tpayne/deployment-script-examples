@@ -1,0 +1,10 @@
+---
+- hosts: myhosts
+  tasks:
+  - name: Run a command
+    shell: ls /
+    register: outputReg
+  - name: Show output
+    debug: msg="Return code was {{ outputReg['rc'] }}, Output stdout was {{ outputReg['stdout'] }}"
+  - name: Show output filters
+    debug: msg="Return code was {{ outputReg|success }}"
