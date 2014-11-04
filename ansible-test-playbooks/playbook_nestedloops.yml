@@ -1,0 +1,25 @@
+# Perform some group management tasks - only works as root if priv. Doesn't work on Mac
+---
+- hosts: myhosts
+
+  tasks:
+  - name: Run nested commands
+    shell: echo "a={{ item[0] }} b={{ item[1] }} c={{ item[2] }}"
+    with_nested:
+        - [ 'a', 'b', 'c' ]
+        - [ 1, 2, 3 ]
+        - [ 'd', 'e', 'f']
+
+- hosts: localhost
+  vars:
+    listVars:
+    - 'data1'
+    - 'data2'
+    - 'data3'
+  tasks:
+  - name: Only run command on localhost
+    shell: echo "a={{ item[0] }} b={{ item[1] }}"
+    with_nested:
+    - listVars
+    - [ 2,3,4 ]
+ 
