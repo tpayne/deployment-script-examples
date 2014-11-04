@@ -1,0 +1,17 @@
+# Run delegate
+---
+- hosts: all
+  
+  tasks:
+  - name: Run a command on localhost only
+    command: uname -a
+    register: outputStr
+    delegate_to: localhost
+
+  - debug: msg="{{outputStr}}"
+    delegate_to: localhost
+
+  - command: uname -a
+    register: outputStr1
+
+  - debug: msg="{{outputStr1}}"
