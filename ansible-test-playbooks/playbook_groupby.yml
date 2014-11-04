@@ -1,0 +1,24 @@
+# Sort all the hosts known about by facts and then only process a group based on facts
+# Find out facts by "ansible -m setup localhost -i ansible_hosts"
+---
+- hosts: all
+ 
+  tasks:
+  - name: Create group in memory of hosts for use in commands
+    action: group_by key={{ansible_distribution}}-{{ansible_distribution_version}}
+
+- hosts: MacOSX-10.10
+  tasks:
+  - name: Ping all Mac 10 boxes
+    ping: data='Hello'
+    register: outputStr
+
+  - debug: msg="{{outputStr}}"
+
+- hosts: MacOSX-10.9
+  tasks:
+  - name: Ping all Mac 9 boxes
+    ping: data='Hello'
+    register: outputStr
+
+  - debug: msg="{{outputStr}}"
