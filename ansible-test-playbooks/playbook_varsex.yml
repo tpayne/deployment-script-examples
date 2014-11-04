@@ -1,0 +1,25 @@
+# Run vars
+---
+- name: Run command locally
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    complex:
+       anime: [ 'silent mobius', 'escaflowne', 'neon genesis evangelion']
+       manga: [ 'compiler', 'assembler', 'ranma 1/2']
+
+  tasks:
+  - name: Do something highly complex
+    ping:
+      data:
+         ribbit: frog
+         dishOf: kermit
+
+  - name: Do something highly complex again
+    ping:
+      data: "{{ complex }}"
+    register: outputStr
+
+  - debug: msg="{{outputStr}}"
