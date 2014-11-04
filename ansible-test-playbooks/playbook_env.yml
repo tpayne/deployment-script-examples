@@ -1,0 +1,23 @@
+---
+- hosts: myhosts
+  vars:
+    env:
+      ORACLE_HOME: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2_test
+      DYLD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2_test
+      LD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2_test
+  tasks:
+  - name: Env-Test
+    environment: env
+    shell: echo ${ORACLE_HOME} ${DYLD_LIBRARY_PATH} ${LD_LIBRARY_PATH} 
+    register: envOut
+  - name: Output the results
+    debug: msg="{{envOut}}"
+  - name: Env-Test1
+    environment:
+      DYLD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2_test1
+      ORACLE_HOME: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2_test1
+      LD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2_test1
+    shell: echo ${ORACLE_HOME} ${DYLD_LIBRARY_PATH} ${LD_LIBRARY_PATH} 
+    register: envOut1
+  - name: Output the results
+    debug: msg="{{envOut1}}"
