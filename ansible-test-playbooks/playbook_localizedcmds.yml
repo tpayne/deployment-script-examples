@@ -1,0 +1,21 @@
+# Perform some group management tasks - only works as root if priv. Doesn't work on Mac
+---
+- hosts: myhosts
+
+  tasks:
+  - name: Only run command on myhosts
+    command: uname -a
+    register: hostOut
+
+  - debug: msg="{{hostOut}}"
+
+- hosts: localhost
+  vars_files:
+    - vars/common_vars.yml
+  tasks:
+  - name: Only run command on localhost
+    command: echo {{commonvars1}}
+    register: hostOut
+
+  - debug: msg="{{hostOut}}"
+ 
