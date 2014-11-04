@@ -1,0 +1,15 @@
+# Perform some group management tasks - only works as root if priv. Doesn't work on Mac
+---
+- hosts: localhost
+  user: root
+  sudo: yes
+
+  tasks:
+  - name: Create a group
+    action: group name=anewgrp
+
+  - name: Modify the group
+    action: group name=anewgrp gid=7777
+
+  - name: Delete the group
+    action: group name=anewgrp state=absent
