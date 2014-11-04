@@ -49,7 +49,7 @@ author: Tim Payne
 
 EXAMPLES = '''
 # Run script /tmp/i.sql on Oracleserver as user scott.
-- oracle hostName=oracleserver.com sqlUser=scott sqlPwd=tiger tns=orcl sqlFile=/tmp/i.sql
+- oracle.py hostName=oracleserver.com sqlUser=scott sqlPwd=tiger tns=orcl sqlFile=/tmp/i.sql
 '''
 
 import ConfigParser
