@@ -1,0 +1,19 @@
+# Run vars
+---
+- name: Run command locally
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    os_version: baggins
+
+  vars_files:
+  - "vars/common_vars.yml"
+  # Load first one, if present, else load defaults
+  - [ "vars/{{os_version}}.yml", "vars/defaults.yml"]
+
+  tasks:
+  - name: Do something highly complex
+    debug: msg="OS={{commonos}}"
+ 
