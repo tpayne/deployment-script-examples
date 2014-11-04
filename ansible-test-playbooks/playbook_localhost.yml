@@ -1,0 +1,12 @@
+# Run commands on localhost only
+---
+- name: Run command locally
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+  - name: Do something highly complex
+    command: chdir=/tmp ls /
+    register: outputStr
+  - debug: msg="{{outputStr}}"

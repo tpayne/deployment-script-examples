@@ -1,0 +1,9 @@
+# Run commands on 3 hosts at a time (assuming they are available and configured)
+---
+- hosts: all
+  serial: 3
+  tasks:
+  - name: Gather even more facts
+    action: setup
+  - name: Ping
+    action: ping
