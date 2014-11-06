@@ -39,3 +39,12 @@
   - debug: msg="Result skipped"
     when: result1|skipped
 
+  - action: shell grep localhost /etc/hosts
+    ignore_errors: yes
+    register: motd_result
+
+  - action: shell echo "hosts contains the word localhost"
+    when: motd_result.rc == 0
+
+  - action: shell echo "hosts contains the word localhost"
+    when: motd_result.stdout.find('localhost') != -1
