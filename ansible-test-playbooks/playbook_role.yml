@@ -4,4 +4,6 @@
     hitomi: anime
     silent_mobius: Yuki
   roles:
-  - aRole
+  - { role: aRole, param1: 1, param2: 2, tags: [ 'a', 'b' ] }
+  - { role: aRole, param1: 3, param2: 4, tags: [ 'c' ]  }
+

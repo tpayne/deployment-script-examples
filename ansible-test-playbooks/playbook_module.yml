@@ -4,7 +4,7 @@
     hitomi: anime
     silent_mobius: Yuki
   roles:
-  - aRole
+  - { role: aRole, param1: 1, param2: 2, tags: [ 'a', 'b' ] }
   tasks:
   - name: Exterminate-1
     action: exterminate.py darlek=the-controller exterminate_mode=bychainsaw
