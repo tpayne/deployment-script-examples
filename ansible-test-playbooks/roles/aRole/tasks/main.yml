@@ -5,3 +5,4 @@
   gem: name=rake state=latest
 - name: Install template
   template: src=conf.j2 dest=/tmp/config.deployed
+- shell: echo param1={{ param1 }}, param2 ={{ param2 }}
