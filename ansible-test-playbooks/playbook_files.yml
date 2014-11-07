@@ -1,0 +1,12 @@
+# Play book for template files
+---
+- hosts: myhosts
+
+  tasks:
+  - name: Source a template file based on variables
+    action: template dest=/tmp/file.txt
+    first_available_file:
+    - templates/{{ansible_hostname}}.txt
+    - templates/{{ansible_distribution}}-{{ansible_distribution_version}}.txt
+    - templates/{{ansible_distribution}}.txt
+    - templates/default.txt
