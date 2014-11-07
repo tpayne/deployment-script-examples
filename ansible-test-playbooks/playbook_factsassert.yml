@@ -1,0 +1,22 @@
+# Play book for example facts and asserts - use -v to see results
+---
+- hosts: myhosts
+  vars:
+    local_var: 10
+  tasks:
+  - name: Set facts
+    set_fact: hitomi_fact="Seer" yuki_fact="{{ local_var * 2 }}"
+  - set_fact:
+      Priss: KS
+      Linna: KS
+
+  - assert: { that: "ansible_os_family != 'AnOS'" }
+  - assert: { that: "hitomi_fact == 'Seer'" }
+  - assert:
+       that:
+       - "hitomi_fact == 'Seer'"
+       - "Priss == 'KS'"
+  - assert:
+       that:
+       - "hitomi_fact != 'Seer'"
+       - "Priss == 'KS'"
