@@ -1,12 +1,27 @@
 # Play book for template files
 ---
 - hosts: myhosts
-
+  vars:
+    my_file: /tmp/file.txt
   tasks:
   - name: Source a template file based on variables
-    action: template dest=/tmp/file.txt
+    action: template dest={{my_file}}
     first_available_file:
     - templates/{{ansible_hostname}}.txt
     - templates/{{ansible_distribution}}-{{ansible_distribution_version}}.txt
     - templates/{{ansible_distribution}}.txt
     - templates/default.txt
+  - name: Copy file
+    copy: src={{my_file}} dest=/tmp/file1.txt mode=0644
+  - name: Use a file module
+    file: path={{my_file}} state=touch mode=0644
+  - name: Stat the file
+    stat: path={{my_file}}
+    register: statR
+  - debug: msg="{{statR}}"
+  - debug: msg="{{my_file}} is an existing file"
+    when: not statR.stat.isdir and statR.stat.exists
+  # Does not work on Mac...
+  - name: Set ACLs
+    acl: name={{my_file}} permissions=rw default=yes
+ 
