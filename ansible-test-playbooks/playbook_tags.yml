@@ -1,0 +1,26 @@
+# Play book with tags --tags [tagname]
+---
+- name: Group all tasks by a tags
+  hosts: myhosts
+  tags:
+    - hitomi
+
+  tasks:
+  - name: Say hitomi
+    debug: msg="Hello hitomi"
+  - name: Run a Yuki command
+    tags: yuki
+    command: echo Yuki-chan    
+
+- name: Group all tasks by Yumi
+  hosts: all
+  tasks:
+  - name: Say Yumi
+    debug: msg="Hello Yumi-chan!"
+  - name: Say a number of hellos
+    debug: msg="Hello KS"
+    tags:
+       - Priss
+       - Linna
+       - Syvlia
+       - Nene
