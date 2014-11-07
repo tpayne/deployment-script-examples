@@ -1,0 +1,24 @@
+# Play book for repo support
+---
+- hosts: myhosts
+ 
+  tasks:
+  - name: Checkout the files from a GIT repo
+    git: repo=https://github.com/tpayne/deployment-script-examples.git dest=/tmp/deployment-script-examples
+    register: outputStr
+  - debug: msg="{{outputStr}}"
+  - command: ls -laR /tmp/deployment-script-examples
+    register: outputStr1
+  - debug: msg="{{outputStr1}}"
+  - name: Delete the files
+    file: name=/tmp/deployment-script-examples state=absent
+
+  - name: Checkout the files from a GIT repo using SVN
+    subversion: repo=https://github.com/tpayne/deployment-script-examples dest=/tmp/deployment-script-examples
+    register: outputStr
+  - debug: msg="{{outputStr}}"
+  - command: ls -laR /tmp/deployment-script-examples
+    register: outputStr1
+  - debug: msg="{{outputStr1}}"
+  - name: Delete the files
+    file: name=/tmp/deployment-script-examples state=absent

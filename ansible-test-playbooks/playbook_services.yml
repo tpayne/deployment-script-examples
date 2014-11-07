@@ -1,6 +1,9 @@
 # Play book for services - does not work on Mac
 ---
 - hosts: myhosts
+  handlers:
+  - name: restart ntp
+    service: name=ntpd state=restarted
 
   tasks:
   - name: stop the ntp service
