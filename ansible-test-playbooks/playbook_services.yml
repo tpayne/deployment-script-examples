@@ -1,0 +1,13 @@
+# Play book for services - does not work on Mac
+---
+- hosts: myhosts
+
+  tasks:
+  - name: stop the ntp service
+    service: name=ntpd state=stopped
+  - name: Start the ntp service
+    service: name=ntpd state=started
+  - name: Notify restart
+    debug: msg="Restart a service"
+    notify: restart ntp
+
