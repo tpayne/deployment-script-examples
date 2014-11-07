@@ -1,0 +1,13 @@
+# Play book for users, but will not work on mac as Ansible has issues with lack of useradd
+---
+- hosts: myhosts
+  vars:
+     passWd: aPassword123
+
+  tasks:
+  - name: Create a user
+    action: user name=anewuser group=users shell=/bin/bash createhome=no comment="This is a user" password={{passWd}}
+  - name: Update a user
+    action: user name=anewuser comment="This is an update"
+  - name: Delete a user
+    action: user name=anewuser state=absent    
