@@ -1,0 +1,18 @@
+# Play book for string editing and searching files
+---
+- hosts: myhosts
+  vars:
+    my_file: /tmp/jboss-as-7.1.1.Final.zip
+    dest_file: /tmp/jbossas
+  tasks:
+  - name: Get the file
+    get_url: url=http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip dest={{my_file}}
+  - name: Create target dir
+    file: path={{dest_file}} state=directory
+  - name: Unpack the file
+    unarchive: src={{my_file}} dest={{dest_file}}
+  - name: Delete existing file
+    file: path={{my_file}} state=absent
+  - name: Delete existing file
+    file: path={{dest_file}} state=absent
+  

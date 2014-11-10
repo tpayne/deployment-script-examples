@@ -1,0 +1,30 @@
+# Play book for string editing and searching files
+---
+- hosts: myhosts
+  vars:
+    my_file: /tmp/file.txt
+  tasks:
+  - name: Delete existing file
+    file: path={{my_file}} state=absent
+  - name: Source a template file based on variables
+    action: template dest={{my_file}}
+    first_available_file:
+    - templates/searchreplace.txt
+  - name: Search and replace1
+    replace: dest={{my_file}} regexp='Hitomi' replace='Hitommi'
+  - name: Search and replace2
+    replace: dest={{my_file}} regexp='Hitomi' replace='Hitommi'
+  - name: Search and replace3
+    replace: dest={{my_file}} regexp='Hitom.i' replace='Hitozi'    
+  - name: Use a file module
+    file: path={{my_file}} state=touch mode=0644
+  - name: Stat the file
+    stat: path={{my_file}}
+    register: statR
+  - debug: msg="{{statR}}"
+  - debug: msg="{{my_file}} is an existing file"
+    when: not statR.stat.isdir and statR.stat.exists
+  # Does not work on Mac...
+  - name: Set ACLs
+    acl: name={{my_file}} permissions=rw default=yes
+ 
