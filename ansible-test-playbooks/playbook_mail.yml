@@ -1,0 +1,15 @@
+# Play book for mail manipulation. It assumes you have a locally configured
+# SMTP server available running on port 25
+---
+- hosts: localhost
+  tasks:
+  - mail: msg='This is a message'
+  - mail: mail
+                host='127.0.0.1'
+                port=25
+                subject="Ansible-report"
+                body="Hello, this is an e-mail."
+                from="root"
+                to="alexgray"
+                headers=Reply-To=root|X-Special="Some email"
+                charset=utf8
