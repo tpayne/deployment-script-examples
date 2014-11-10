@@ -1,0 +1,20 @@
+# Play book for example facts and asserts - use -v to see results
+---
+- hosts: myhosts
+
+  tasks:
+  - name: Run facter
+    action: facter
+    register: outFacter
+  - name: Run ohai
+    action: ohai
+    register: outOhai
+  - name: Run setup
+    setup: filter=ansible_*
+    register: outSetup
+
+  - debug: msg="facter={{outFacter}}"
+  - debug: msg="ohai={{outOhai}}"
+  - debug: msg="setup={{outSetup}}"
+
+
