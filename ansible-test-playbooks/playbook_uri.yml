@@ -1,0 +1,16 @@
+# Play book for uri manipulation
+---
+- hosts: myhosts
+  vars:
+     url: http://download.jboss.org/
+  tasks:
+  - name: Ping URI to check GET works
+    uri:  url={{url}}
+    register: outStr
+  - debug: msg="{{outStr}}"
+  - name: Play at login
+    uri: url={{url}}
+       method=POST body="name=tryName&password=tryPasswd&enter=Sign%20in"
+       status_code=302 HEADER_Content-Type="application/x-www-form-urlencoded"
+    register: loginStr
+    ignore_errors: yes
