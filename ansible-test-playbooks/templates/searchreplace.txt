@@ -1,0 +1,11 @@
+Here is some text in a string to search and replace...
+
+Hitomi Hitomi Hitomi Hitomi Hitomi Hitomi Hitomi Hitomi Hitomi 
+Yumi Yumi Yumi Yumi Yumi Yumi Yumi Yumi YumiYumi Yumi Yumi Yumi 
+Katsumi Katsumi Katsumi Katsumi Katsumi Katsumi Katsumi Katsumi
+Katsumi
+Katsumi
+KatsumiKatsumiKatsumiKatsumiKatsumiKatsumiKatsumiKatsumiKatsumi
+
+
+
