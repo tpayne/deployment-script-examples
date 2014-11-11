@@ -1,0 +1,28 @@
+# Play book for error handling
+---
+- hosts: myhosts
+
+  tasks:
+  - name: Change a result - yes
+    command: ls -l /tmp
+    register: outStrTxt
+    changed_when: "outStrTxt.rc == 0"
+  - name: Change a result - no
+    command: ls -l /tmp
+    register: outStrTxt1
+    changed_when: "outStrTxt1.rc != 0"
+
+  - name: Run command option that does not exist
+    command:  ps --eef lala
+    register: outStr
+    ignore_errors: yes
+  - name: Do I fail the command - no, this will not fail unless the PS is really weird
+    fail: msg="This PS is very weird!"
+    when: "'GIBBER GIBBER' in outStr.stderr"
+  - name: Run command option that does not exist
+    command:  ps --eef lala
+    register: outStr1
+    ignore_errors: yes
+  - name: Do I fail the command - Yes, this will fail
+    fail: msg="The PS command failed as expected"
+    when: "'illegal option' in outStr1.stderr"
