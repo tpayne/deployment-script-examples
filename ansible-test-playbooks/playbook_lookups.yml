@@ -1,0 +1,22 @@
+# Play book for lookup handling
+---
+- hosts: myhosts
+  vars:
+     contents: "{{ lookup('file', '/etc/hosts') }}"
+  tasks:
+  - name: Print out the hosts file
+    debug: msg="The hosts file has {{contents}}"
+  - name: Get the value of an env var $HOME
+    debug: msg="ENV HOME={{ lookup('env','HOME') }}"
+  - name: Lookup with lists
+    debug: msg="What command do I have this time? '{{ item }}'"
+    with_lines:
+    - cat /etc/hosts
+    - cat /etc/passwd
+    - cat /etc/group
+  - name: How to get the raw result of a command
+    debug: msg="'{{ lookup('pipe','date') }}' is the raw result of the date command"
+  - name: Evaluating if a template has expanded content based on variables I have defined - YES
+    debug: msg="'{{ lookup('template', 'templates/template.j2') }}' is a value from the expansion of this template"
+  - name: Evaluating if a template has expanded content based on variables I have defined - NO
+    debug: msg="'{{ lookup('template', 'templates/template1.j2') }}' is a value from the expansion of this template"
