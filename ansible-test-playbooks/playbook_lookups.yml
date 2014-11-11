@@ -1,4 +1,8 @@
 # Play book for lookup handling
+# The full list of lookup plugins are in...
+# https://github.com/ansible/ansible/tree/devel/lib/ansible/runner/lookup_plugins
+# ...if you feel like creating one or using more examples
+#
 ---
 - hosts: myhosts
   vars:
