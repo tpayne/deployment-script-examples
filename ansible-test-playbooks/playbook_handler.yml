@@ -1,5 +1,6 @@
 ---
 - include: playbook_simpleshell.yml
+  when: '"ansible_os_family" == "Darwin"'
 - hosts: myhosts
   handlers:
   - name: debug-something
