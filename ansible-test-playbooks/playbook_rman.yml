@@ -1,0 +1,16 @@
+# Play book for cleaning RMAN logs
+---
+- hosts: myhosts
+  vars:
+     localFile: files/rman.cmd
+     destFile: /tmp/{{ohai_ohai_time}}_rman.cmd
+  tasks:
+  - name: Clearing all RMAN logs
+    copy: src={{localFile}} dest={{destFile}}
+  - name: Run RMAN
+    command: rman cmdfile={{destFile}}
+    register: rmanStr
+    ignore_errors: yes
+  - file: path={{destFile}} state=absent    
+  - debug: msg="{{rmanStr}}"
+  
