@@ -1,0 +1,59 @@
+---
+- hosts: myhosts
+  vars:
+    oracle_host: 172.16.72.128
+    env:
+      ORACLE_HOME: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
+      DYLD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
+      LD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
+  tasks:
+  - name: Create a user
+    environment: env
+    action: oracle_useradmin.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 useradmin_task=create_schema schemaName=foobar schemaPwd=humbug
+    register: sqlOut
+  - name: Output the results
+    debug: msg="{{sqlOut}}"
+  - name: Modify a user
+    environment: env
+    action: oracle_useradmin.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 useradmin_task=modify_schema schemaName=foobar schemaPwd=humbugxx
+    register: sqlOut1
+  - name: Output the results
+    debug: msg="{{sqlOut1}}"
+  - name: Drop a user
+    environment: env
+    action: oracle_useradmin.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 useradmin_task=drop_schema schemaName=foobar
+    register: sqlOut2
+  - name: Output the results
+    debug: msg="{{sqlOut2}}"
+  - name: Create a user with tablespaces
+    environment: env
+    action: oracle_useradmin.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 useradmin_task=create_schema schemaName=foobar schemaPwd=humbug default_tablespace=users
+    register: sqlOut3
+  - name: Output the results
+    debug: msg="{{sqlOut3}}"
+  - name: Drop a user with tablespaces
+    environment: env
+    action: oracle_useradmin.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 useradmin_task=drop_schema schemaName=foobar
+    register: sqlOut4
+  - name: Output the results
+    debug: msg="{{sqlOut4}}" 
+  - name: Create a user with error
+    environment: env
+    action: oracle_useradmin.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 useradmin_task=create_schema schemaName=foobar schemaPwd=humbug default_tablespace=baggins temporary_tablespace=lala
+    register: sqlOut5
+    ignore_errors: yes 
+  - name: Create a user with permissions error
+    environment: env
+    action: oracle_useradmin.py hostName={{oracle_host}} sqlUser=pcms_sys sqlPwd=pcms_sys port=1521 tns=dim12 useradmin_task=create_schema schemaName=foobar schemaPwd=humbug
+    register: sqlOut6
+    ignore_errors: yes
+  - name: Drop non-existant user
+    environment: env
+    action: oracle_useradmin.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 useradmin_task=drop_schema schemaName=lalalabababa
+    register: sqlOut7
+    ignore_errors: yes    
+  - name: Modify a non-existant user
+    environment: env
+    action: oracle_useradmin.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 useradmin_task=modify_schema schemaName=lalalabababa schemaPwd=humbug
+    register: sqlOut8
+    ignore_errors: yes    

@@ -7,9 +7,10 @@
       DYLD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
       LD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
   tasks:
-  - name: SQLFile-1
+  - name: Print out Oracle facts
     environment: env
-    action: oracle_runscripts.py hostName={{oracle_host}} sqlUser=pcms_sys sqlPwd=pcms_sys port=1521 tns=dim12 sqlFile=/tmp/i.sql logFile=STDOUT
+    action: oracle_facts.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 
     register: sqlOut
   - name: Output the results
     debug: msg="{{sqlOut}}"
+ 
