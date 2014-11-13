@@ -40,13 +40,8 @@ author: Tim Payne
 '''
 
 EXAMPLES = '''
-# Create a new schema on Oracleserver as user scott.
-- oracle_useradmin.py hostName=oracleserver.com sqlUser=scott sqlPwd=tiger tns=orcl useradmin_task=create_schema schemaName=foobar schemaPwd=humbug
-# Drop a schema on Oracleserver as user scott.
-- oracle_useradmin.py hostName=oracleserver.com sqlUser=scott sqlPwd=tiger tns=orcl useradmin_task=drop_schema schemaName=foobar
-# Alter a schema's password.
-- oracle_useradmin.py hostName=oracleserver.com sqlUser=scott sqlPwd=tiger tns=orcl useradmin_task=modify_schema schemaName=foobar schemaPwd=newpasswd
-
+# Get the facts
+oracle_facts.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 
 '''
 
 import ConfigParser
@@ -58,6 +53,7 @@ import sys
 import getopt
 import json
 
+# Read the Database parameters...
 def read_params(cur,schemaName, mess,dbParams):
     sqlQ = 'SELECT name, value from V$PARAMETER' 
 
@@ -76,6 +72,7 @@ def read_params(cur,schemaName, mess,dbParams):
  
     return True
 
+# Read the Database NLS instance parameters...
 def read_nls_instance_params(cur,schemaName, mess,nlsInstanceParams):
     sqlQ = 'SELECT parameter, value from NLS_INSTANCE_PARAMETERS' 
 
@@ -94,6 +91,7 @@ def read_nls_instance_params(cur,schemaName, mess,nlsInstanceParams):
  
     return True
 
+# Read the NLS Database parameters...
 def read_nls_db_params(cur,schemaName, mess,nlsDbParams):
     sqlQ = 'SELECT parameter, value from NLS_DATABASE_PARAMETERS' 
 
@@ -112,6 +110,7 @@ def read_nls_db_params(cur,schemaName, mess,nlsDbParams):
  
     return True
 
+# Read the Database files...
 def read_dbfiles(cur,schemaName, mess,dbFiles):
     sqlQ = 'SELECT file_name, tablespace_name, bytes, status from dba_data_files' 
 
@@ -130,6 +129,7 @@ def read_dbfiles(cur,schemaName, mess,dbFiles):
  
     return True
 
+# Read the Database tablespaces...
 def read_tablespaces(cur,schemaName, mess,dbTableSpaces):
     sqlQ = 'SELECT TABLESPACE_NAME, BLOCK_SIZE, status from DBA_TABLESPACES' 
 
@@ -148,6 +148,7 @@ def read_tablespaces(cur,schemaName, mess,dbTableSpaces):
  
     return True
 
+# Read the Database schemas...
 def read_schemas(cur,schemaName, mess,dbSchemas):
     sqlQ = 'select username,account_status,to_char(lock_date,\'DD-MON-YYYY HH24:MI:SS\'),'
     sqlQ += 'to_char(expiry_date,\'DD-MON-YYYY HH24:MI:SS\'),'
