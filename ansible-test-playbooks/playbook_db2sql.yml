@@ -1,0 +1,23 @@
+# Run Adhoc SQL scripts
+---
+- hosts: myhosts
+  vars_prompt:
+    - name: db2Pwd
+      prompt: "DB2 Password"
+      default: "db2"  
+    - name: dbName
+      prompt: "DB2 database"
+      default: "db2"        
+  vars:
+    db2_host: localhost
+    db2Home: /Users/alexgray/sqllib
+    env:
+      LD_LIBRARY_PATH: "{{db2Home}}/lib"
+      DYLD_LIBRARY_PATH: "{{db2Home}}/lib"
+  tasks:
+  - name: SQLFile-1
+    environment: env
+    action: db2_runscripts.py db2server="{{db2_host}}" db2port=50000 db2user=alexgray db2userpwd="{{db2Pwd}}" db2db="{{dbName}}" sqlFile=/tmp/i.sql logFile=STDOUT
+    register: sqlOut
+  - name: Output the results
+    debug: msg="{{sqlOut}}"
