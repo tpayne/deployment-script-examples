@@ -49,7 +49,6 @@ import string
 import sys
 import getopt
 import json
-import psycopg2
 
 try:
     import psycopg2
