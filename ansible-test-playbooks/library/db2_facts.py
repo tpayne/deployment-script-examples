@@ -3,7 +3,7 @@
 
 DOCUMENTATION = '''
 ---
-module: postgresql_facts
+module: db2_facts
 short_description: This module allows you to run get key DB2 information from the database and put it into facts
 description:
     - Gets DB2 information and puts it into the Ansible facts.
