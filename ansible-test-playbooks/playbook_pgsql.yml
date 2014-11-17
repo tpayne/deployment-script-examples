@@ -1,0 +1,15 @@
+# Run Adhoc SQL scripts
+---
+- hosts: myhosts
+  vars_prompt:
+    - name: PostgresqlPwd
+      prompt: "Postgres Password"
+      default: "postgres"  
+  vars:
+    postgres_host: localhost
+  tasks:
+  - name: SQLFile-1
+    action: postgresql_runscripts.py pgserver={{postgres_host}} pgport=5432 pguser=postgres pguserpwd={{PostgresqlPwd}} pgdb=test sqlFile=/tmp/i.sql logFile=STDOUT
+    register: sqlOut
+  - name: Output the results
+    debug: msg="{{sqlOut}}"

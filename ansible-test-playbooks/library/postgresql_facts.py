@@ -39,7 +39,7 @@ author: Tim Payne
 
 EXAMPLES = '''
 # Get the facts
-postgresql_facts.py XXX
+postgresql_facts.py pgserver={{postgres_host}} pgport=5432 pguser=postgres pguserpwd={{PostgresqlPwd}} pgdb=test 
 '''
 
 import ConfigParser
@@ -150,7 +150,7 @@ def main():
     conStr += " port='"+pgport+"'"
  
     try:      
-        # Connect to Oracle...
+        # Connect to Postgres...
         con = psycopg2.connect (conStr)
     except psycopg2.Error as e:
         mess[0] = e.pgerror
