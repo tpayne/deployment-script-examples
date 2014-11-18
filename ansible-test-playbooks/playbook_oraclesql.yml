@@ -1,0 +1,16 @@
+# Run Adhoc SQL scripts
+---
+- hosts: myhosts
+  vars:
+    oracle_host: 172.16.72.128
+    env:
+      ORACLE_HOME: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
+      DYLD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
+      LD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
+  tasks:
+  - name: SQLFile-1
+    environment: env
+    action: oracle_runscripts.py hostName={{oracle_host}} sqlUser=pcms_sys sqlPwd=pcms_sys port=1521 tns=dim12 sqlFile=/tmp/i.sql logFile=STDOUT
+    register: sqlOut
+  - name: Output the results
+    debug: msg="{{sqlOut}}"
