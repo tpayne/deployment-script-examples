@@ -4,9 +4,9 @@
 DOCUMENTATION = '''
 ---
 module: oracle_facts
-short_description: This module allows you to export an Oracle database using the PL/SQL interface for data dump
+short_description: This module allows you to export an Oracle database using the PL/SQL interface for data pump
 description:
-    - Gets Oracle information and puts it into the Ansible facts.
+    - Exports a database via data pump.
 version_added: "1.0"
 options:
     hostName:
@@ -74,7 +74,8 @@ from time import gmtime, strftime
 def runDataDump(cur,schemaName,mess,mode,directory,file_list):
 
     filename_local = file_list[0] + strftime("%Y%m%d%H%M%S", gmtime())
-    exportFileLog = 'EXPDAT.LOG' + strftime("%Y%m%d%H%M%S", gmtime())
+    exportFileLog = 'EXPORT'+strftime("%Y%m%d%H%M%S", gmtime())+'.LOG'
+    
     sqlQ =  'BEGIN declare\n'
     sqlQ += '   h1   NUMBER;\n'
     sqlQ += 'begin\n'
