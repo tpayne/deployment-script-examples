@@ -1,0 +1,19 @@
+---
+- hosts: myhosts
+  vars_prompt:
+    - name: filename
+      prompt: "Import file to use"  
+  vars:
+    oracle_host: 172.16.72.128
+    env:
+      ORACLE_HOME: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
+      DYLD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
+      LD_LIBRARY_PATH: /Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2
+  tasks:
+  - name: Perform an Oracle restore
+    environment: env
+    action: oracle_restore.py hostName={{oracle_host}} sqlUser=system sqlPwd=manager port=1521 tns=dim12 filename={{filename}}
+    register: sqlOut
+  - name: Output the results
+    debug: msg="{{sqlOut}}"
+ 
