@@ -1,6 +1,7 @@
 <html>
 	<body>
-		<h1>This is the index file for <%= node["fqdn"] %></h1>
+		<h1>Welcome to <%= node["company"] %> </h1>
+		<h2>This is the index file for <%= node["fqdn"] %></h2>
 		<p>This server has <%= node["memory"]["total"].to_i / 1024 %> </p>
 	</body>
 </html>
