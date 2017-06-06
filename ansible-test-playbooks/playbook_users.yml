@@ -18,6 +18,8 @@
     action: user name=anewuser state=absent    
   - name: Create a user again
     user: name=fred shell=/bin/bash
+  - name: Change shell
+    command: /usr/bin/chsh -s /usr/bin/sh fred
   - name: Delete a user again
     user: name=fred state=absent
 
