@@ -16,4 +16,8 @@
     action: user name=anewuser comment="This is an update"
   - name: Delete a user
     action: user name=anewuser state=absent    
+  - name: Create a user again
+    user: name=fred shell=/bin/bash
+  - name: Delete a user again
+    user: name=fred state=absent
 
