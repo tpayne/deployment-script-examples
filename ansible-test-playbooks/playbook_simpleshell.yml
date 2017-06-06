@@ -5,3 +5,5 @@
     shell: echo This is a command
   - name: Install a package
     gem: name=rake state=latest
+  - name: Run a test shell to create file if not exist
+    shell: creates=/tmp/ll.txt touch /tmp/ll.txt 
