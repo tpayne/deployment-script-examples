@@ -1,0 +1,7 @@
+- name: do-test
+  shell: echo do-test handle
+  notify:
+  - do-test1
+
+- name: do-test1
+  shell: echo do-test1 handle
