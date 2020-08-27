@@ -1,0 +1,736 @@
+#!/bin/sh -xv
+
+echo "Run some samples..."
++ echo 'Run some samples...'
+Run some samples...
+ansible-playbook -i ansible_hosts simple_playbook.yml
++ ansible-playbook -i ansible_hosts simple_playbook.yml
+[WARNING]: A duplicate localhost-like entry was found (localhost). First found localhost was 127.0.0.1
+
+PLAY [Run something] *****************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+
+TASK [Do something highly complex] ***************************************************************************
+changed: [localhost]
+
+TASK [debug] *************************************************************************************************
+ok: [localhost] => {
+    "msg": {
+        "changed": true,
+        "cmd": [
+            "ls",
+            "/"
+        ],
+        "delta": "0:00:00.009873",
+        "end": "2020-08-27 18:58:28.716849",
+        "failed": false,
+        "rc": 0,
+        "start": "2020-08-27 18:58:28.706976",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "Applications\nHotaru-chan\nLibrary\nSystem\nUsers\nVolumes\nbin\ncores\ndev\netc\nhome\nopt\nprivate\nsbin\ntmp\nusr\nvar",
+        "stdout_lines": [
+            "Applications",
+            "Hotaru-chan",
+            "Library",
+            "System",
+            "Users",
+            "Volumes",
+            "bin",
+            "cores",
+            "dev",
+            "etc",
+            "home",
+            "opt",
+            "private",
+            "sbin",
+            "tmp",
+            "usr",
+            "var"
+        ]
+    }
+}
+
+TASK [Who am i really] ***************************************************************************************
+changed: [localhost]
+
+TASK [debug] *************************************************************************************************
+ok: [localhost] => {
+    "msg": {
+        "changed": true,
+        "cmd": [
+            "who",
+            "am",
+            "i"
+        ],
+        "delta": "0:00:00.009619",
+        "end": "2020-08-27 18:58:30.106880",
+        "failed": false,
+        "rc": 0,
+        "start": "2020-08-27 18:58:30.097261",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "alexgray ttys004  Aug 27 18:58 \t(::1)",
+        "stdout_lines": [
+            "alexgray ttys004  Aug 27 18:58 \t(::1)"
+        ]
+    }
+}
+
+TASK [debug] *************************************************************************************************
+ok: [localhost] => {
+    "msg": "alexgray"
+}
+
+PLAY RECAP ***************************************************************************************************
+localhost                  : ok=6    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+ansible-playbook -i ansible_hosts playbook_batch.yml
++ ansible-playbook -i ansible_hosts playbook_batch.yml
+[WARNING]: A duplicate localhost-like entry was found (localhost). First found localhost was 127.0.0.1
+
+PLAY [all] ***************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+[WARNING]: Platform darwin on host 127.0.0.1 is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [127.0.0.1]
+[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+
+TASK [Gather even more facts] ********************************************************************************
+ok: [127.0.0.1]
+ok: [localhost]
+
+TASK [Ping] **************************************************************************************************
+ok: [127.0.0.1]
+ok: [localhost]
+
+PLAY RECAP ***************************************************************************************************
+127.0.0.1                  : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+ansible-playbook -i ansible_hosts playbook_delegate.yml
++ ansible-playbook -i ansible_hosts playbook_delegate.yml
+[WARNING]: A duplicate localhost-like entry was found (localhost). First found localhost was 127.0.0.1
+
+PLAY [all] ***************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+[WARNING]: Platform darwin on host 127.0.0.1 is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [127.0.0.1]
+
+TASK [Run a command on localhost only] ***********************************************************************
+changed: [127.0.0.1 -> localhost]
+changed: [localhost -> localhost]
+
+TASK [debug] *************************************************************************************************
+ok: [127.0.0.1 -> localhost] => {
+    "msg": {
+        "changed": true,
+        "cmd": [
+            "uname",
+            "-a"
+        ],
+        "delta": "0:00:00.006636",
+        "end": "2020-08-27 18:58:44.391358",
+        "failed": false,
+        "rc": 0,
+        "start": "2020-08-27 18:58:44.384722",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "Darwin Rhiannon-mac 19.6.0 Darwin Kernel Version 19.6.0: Thu Jun 18 20:49:00 PDT 2020; root:xnu-6153.141.1~1/RELEASE_X86_64 x86_64",
+        "stdout_lines": [
+            "Darwin Rhiannon-mac 19.6.0 Darwin Kernel Version 19.6.0: Thu Jun 18 20:49:00 PDT 2020; root:xnu-6153.141.1~1/RELEASE_X86_64 x86_64"
+        ]
+    }
+}
+ok: [localhost -> localhost] => {
+    "msg": {
+        "changed": true,
+        "cmd": [
+            "uname",
+            "-a"
+        ],
+        "delta": "0:00:00.007332",
+        "end": "2020-08-27 18:58:44.391286",
+        "failed": false,
+        "rc": 0,
+        "start": "2020-08-27 18:58:44.383954",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "Darwin Rhiannon-mac 19.6.0 Darwin Kernel Version 19.6.0: Thu Jun 18 20:49:00 PDT 2020; root:xnu-6153.141.1~1/RELEASE_X86_64 x86_64",
+        "stdout_lines": [
+            "Darwin Rhiannon-mac 19.6.0 Darwin Kernel Version 19.6.0: Thu Jun 18 20:49:00 PDT 2020; root:xnu-6153.141.1~1/RELEASE_X86_64 x86_64"
+        ]
+    }
+}
+
+TASK [command] ***********************************************************************************************
+changed: [127.0.0.1]
+changed: [localhost]
+
+TASK [debug] *************************************************************************************************
+ok: [127.0.0.1] => {
+    "msg": {
+        "changed": true,
+        "cmd": [
+            "uname",
+            "-a"
+        ],
+        "delta": "0:00:00.005248",
+        "end": "2020-08-27 18:58:46.097900",
+        "failed": false,
+        "rc": 0,
+        "start": "2020-08-27 18:58:46.092652",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "Darwin Rhiannon-mac 19.6.0 Darwin Kernel Version 19.6.0: Thu Jun 18 20:49:00 PDT 2020; root:xnu-6153.141.1~1/RELEASE_X86_64 x86_64",
+        "stdout_lines": [
+            "Darwin Rhiannon-mac 19.6.0 Darwin Kernel Version 19.6.0: Thu Jun 18 20:49:00 PDT 2020; root:xnu-6153.141.1~1/RELEASE_X86_64 x86_64"
+        ]
+    }
+}
+ok: [localhost] => {
+    "msg": {
+        "changed": true,
+        "cmd": [
+            "uname",
+            "-a"
+        ],
+        "delta": "0:00:00.004942",
+        "end": "2020-08-27 18:58:46.102779",
+        "failed": false,
+        "rc": 0,
+        "start": "2020-08-27 18:58:46.097837",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "Darwin Rhiannon-mac 19.6.0 Darwin Kernel Version 19.6.0: Thu Jun 18 20:49:00 PDT 2020; root:xnu-6153.141.1~1/RELEASE_X86_64 x86_64",
+        "stdout_lines": [
+            "Darwin Rhiannon-mac 19.6.0 Darwin Kernel Version 19.6.0: Thu Jun 18 20:49:00 PDT 2020; root:xnu-6153.141.1~1/RELEASE_X86_64 x86_64"
+        ]
+    }
+}
+
+PLAY RECAP ***************************************************************************************************
+127.0.0.1                  : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+ansible-playbook -i ansible_hosts playbook_env.yml
++ ansible-playbook -i ansible_hosts playbook_env.yml
+[WARNING]: A duplicate localhost-like entry was found (localhost). First found localhost was 127.0.0.1
+
+PLAY [myhosts] ***********************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+[WARNING]: Platform darwin on host 127.0.0.1 is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [127.0.0.1]
+[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+
+TASK [Env-Test] **********************************************************************************************
+[WARNING]: could not parse environment value, skipping: ['env']
+[WARNING]: could not parse environment value, skipping: ['env']
+changed: [127.0.0.1]
+changed: [localhost]
+
+TASK [Output the results] ************************************************************************************
+ok: [127.0.0.1] => {
+    "msg": {
+        "changed": true,
+        "cmd": "echo ${ORACLE_HOME} ${DYLD_LIBRARY_PATH} ${LD_LIBRARY_PATH}",
+        "delta": "0:00:00.009659",
+        "end": "2020-08-27 18:58:51.808931",
+        "failed": false,
+        "rc": 0,
+        "start": "2020-08-27 18:58:51.799272",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "",
+        "stdout_lines": []
+    }
+}
+ok: [localhost] => {
+    "msg": {
+        "changed": true,
+        "cmd": "echo ${ORACLE_HOME} ${DYLD_LIBRARY_PATH} ${LD_LIBRARY_PATH}",
+        "delta": "0:00:00.009453",
+        "end": "2020-08-27 18:58:51.810497",
+        "failed": false,
+        "rc": 0,
+        "start": "2020-08-27 18:58:51.801044",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "",
+        "stdout_lines": []
+    }
+}
+
+TASK [Env-Test1] *********************************************************************************************
+changed: [127.0.0.1]
+changed: [localhost]
+
+TASK [Output the results] ************************************************************************************
+ok: [127.0.0.1] => {
+    "msg": {
+        "changed": true,
+        "cmd": "echo ${ORACLE_HOME} ${DYLD_LIBRARY_PATH} ${LD_LIBRARY_PATH}",
+        "delta": "0:00:00.009867",
+        "end": "2020-08-27 18:58:53.412869",
+        "failed": false,
+        "rc": 0,
+        "start": "2020-08-27 18:58:53.403002",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "/Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2_test1",
+        "stdout_lines": [
+            "/Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2_test1"
+        ]
+    }
+}
+ok: [localhost] => {
+    "msg": {
+        "changed": true,
+        "cmd": "echo ${ORACLE_HOME} ${DYLD_LIBRARY_PATH} ${LD_LIBRARY_PATH}",
+        "delta": "0:00:00.008589",
+        "end": "2020-08-27 18:58:53.431717",
+        "failed": false,
+        "rc": 0,
+        "start": "2020-08-27 18:58:53.423128",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "/Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2_test1",
+        "stdout_lines": [
+            "/Volumes/Hitomi/tpayne/work/Oracle/instantclient_11_2_test1"
+        ]
+    }
+}
+
+PLAY RECAP ***************************************************************************************************
+127.0.0.1                  : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+ansible-playbook -i ansible_hosts playbook_errorhandling.yml
++ ansible-playbook -i ansible_hosts playbook_errorhandling.yml
+[WARNING]: A duplicate localhost-like entry was found (localhost). First found localhost was 127.0.0.1
+
+PLAY [myhosts] ***********************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+[WARNING]: Platform darwin on host 127.0.0.1 is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [127.0.0.1]
+[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+
+TASK [Change a result - yes] *********************************************************************************
+changed: [127.0.0.1]
+changed: [localhost]
+
+TASK [Change a result - no] **********************************************************************************
+ok: [127.0.0.1]
+ok: [localhost]
+
+TASK [Run command option that does not exist] ****************************************************************
+fatal: [127.0.0.1]: FAILED! => {"changed": true, "cmd": ["ps", "--eef", "lala"], "delta": "0:00:00.008006", "end": "2020-08-27 18:59:02.704496", "msg": "non-zero return code", "rc": 1, "start": "2020-08-27 18:59:02.696490", "stderr": "ps: illegal option -- -\nusage: ps [-AaCcEefhjlMmrSTvwXx] [-O fmt | -o fmt] [-G gid[,gid...]]\n          [-g grp[,grp...]] [-u [uid,uid...]]\n          [-p pid[,pid...]] [-t tty[,tty...]] [-U user[,user...]]\n       ps [-L]", "stderr_lines": ["ps: illegal option -- -", "usage: ps [-AaCcEefhjlMmrSTvwXx] [-O fmt | -o fmt] [-G gid[,gid...]]", "          [-g grp[,grp...]] [-u [uid,uid...]]", "          [-p pid[,pid...]] [-t tty[,tty...]] [-U user[,user...]]", "       ps [-L]"], "stdout": "", "stdout_lines": []}
+...ignoring
+fatal: [localhost]: FAILED! => {"changed": true, "cmd": ["ps", "--eef", "lala"], "delta": "0:00:00.008239", "end": "2020-08-27 18:59:02.704507", "msg": "non-zero return code", "rc": 1, "start": "2020-08-27 18:59:02.696268", "stderr": "ps: illegal option -- -\nusage: ps [-AaCcEefhjlMmrSTvwXx] [-O fmt | -o fmt] [-G gid[,gid...]]\n          [-g grp[,grp...]] [-u [uid,uid...]]\n          [-p pid[,pid...]] [-t tty[,tty...]] [-U user[,user...]]\n       ps [-L]", "stderr_lines": ["ps: illegal option -- -", "usage: ps [-AaCcEefhjlMmrSTvwXx] [-O fmt | -o fmt] [-G gid[,gid...]]", "          [-g grp[,grp...]] [-u [uid,uid...]]", "          [-p pid[,pid...]] [-t tty[,tty...]] [-U user[,user...]]", "       ps [-L]"], "stdout": "", "stdout_lines": []}
+...ignoring
+
+TASK [Do I fail the command - no, this will not fail unless the PS is really weird] **************************
+skipping: [127.0.0.1]
+skipping: [localhost]
+
+TASK [Run command option that does not exist] ****************************************************************
+fatal: [127.0.0.1]: FAILED! => {"changed": true, "cmd": ["ps", "--eef", "lala"], "delta": "0:00:00.006813", "end": "2020-08-27 18:59:04.329785", "msg": "non-zero return code", "rc": 1, "start": "2020-08-27 18:59:04.322972", "stderr": "ps: illegal option -- -\nusage: ps [-AaCcEefhjlMmrSTvwXx] [-O fmt | -o fmt] [-G gid[,gid...]]\n          [-g grp[,grp...]] [-u [uid,uid...]]\n          [-p pid[,pid...]] [-t tty[,tty...]] [-U user[,user...]]\n       ps [-L]", "stderr_lines": ["ps: illegal option -- -", "usage: ps [-AaCcEefhjlMmrSTvwXx] [-O fmt | -o fmt] [-G gid[,gid...]]", "          [-g grp[,grp...]] [-u [uid,uid...]]", "          [-p pid[,pid...]] [-t tty[,tty...]] [-U user[,user...]]", "       ps [-L]"], "stdout": "", "stdout_lines": []}
+...ignoring
+fatal: [localhost]: FAILED! => {"changed": true, "cmd": ["ps", "--eef", "lala"], "delta": "0:00:00.007835", "end": "2020-08-27 18:59:04.336318", "msg": "non-zero return code", "rc": 1, "start": "2020-08-27 18:59:04.328483", "stderr": "ps: illegal option -- -\nusage: ps [-AaCcEefhjlMmrSTvwXx] [-O fmt | -o fmt] [-G gid[,gid...]]\n          [-g grp[,grp...]] [-u [uid,uid...]]\n          [-p pid[,pid...]] [-t tty[,tty...]] [-U user[,user...]]\n       ps [-L]", "stderr_lines": ["ps: illegal option -- -", "usage: ps [-AaCcEefhjlMmrSTvwXx] [-O fmt | -o fmt] [-G gid[,gid...]]", "          [-g grp[,grp...]] [-u [uid,uid...]]", "          [-p pid[,pid...]] [-t tty[,tty...]] [-U user[,user...]]", "       ps [-L]"], "stdout": "", "stdout_lines": []}
+...ignoring
+
+TASK [Do I fail the command - Yes, this will fail] ***********************************************************
+fatal: [127.0.0.1]: FAILED! => {"changed": false, "msg": "The PS command failed as expected"}
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "The PS command failed as expected"}
+
+PLAY RECAP ***************************************************************************************************
+127.0.0.1                  : ok=5    changed=3    unreachable=0    failed=1    skipped=1    rescued=0    ignored=2   
+localhost                  : ok=5    changed=3    unreachable=0    failed=1    skipped=1    rescued=0    ignored=2   
+
+
+ansible-playbook -i ansible_hosts playbook_factsassert.yml
++ ansible-playbook -i ansible_hosts playbook_factsassert.yml
+[WARNING]: A duplicate localhost-like entry was found (localhost). First found localhost was 127.0.0.1
+
+PLAY [myhosts] ***********************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+[WARNING]: Platform darwin on host 127.0.0.1 is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [127.0.0.1]
+
+TASK [Set facts] *********************************************************************************************
+ok: [127.0.0.1]
+ok: [localhost]
+
+TASK [set_fact] **********************************************************************************************
+ok: [127.0.0.1]
+ok: [localhost]
+
+TASK [assert] ************************************************************************************************
+ok: [127.0.0.1] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [localhost] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [assert] ************************************************************************************************
+ok: [127.0.0.1] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [localhost] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [assert] ************************************************************************************************
+ok: [127.0.0.1] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [localhost] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [assert] ************************************************************************************************
+fatal: [127.0.0.1]: FAILED! => {
+    "assertion": "hitomi_fact != 'Seer'",
+    "changed": false,
+    "evaluated_to": false,
+    "msg": "Assertion failed"
+}
+fatal: [localhost]: FAILED! => {
+    "assertion": "hitomi_fact != 'Seer'",
+    "changed": false,
+    "evaluated_to": false,
+    "msg": "Assertion failed"
+}
+
+PLAY RECAP ***************************************************************************************************
+127.0.0.1                  : ok=6    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=6    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+
+ansible-playbook -i ansible_hosts playbook_lists.yml 
++ ansible-playbook -i ansible_hosts playbook_lists.yml
+[WARNING]: A duplicate localhost-like entry was found (localhost). First found localhost was 127.0.0.1
+[DEPRECATION WARNING]: 'include' for playbook includes. You should use 'import_playbook' instead. This 
+feature will be removed in version 2.12. Deprecation warnings can be disabled by setting 
+deprecation_warnings=False in ansible.cfg.
+
+PLAY [myhosts] ***********************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+[WARNING]: Platform darwin on host 127.0.0.1 is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [127.0.0.1]
+[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+
+TASK [Run a test shell] **************************************************************************************
+changed: [127.0.0.1]
+changed: [localhost]
+
+TASK [Install a package] *************************************************************************************
+ok: [127.0.0.1]
+ok: [localhost]
+
+TASK [Run a test shell to create file if not exist] **********************************************************
+ok: [127.0.0.1]
+ok: [localhost]
+
+PLAY [myhosts] ***********************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+ok: [127.0.0.1]
+ok: [localhost]
+
+TASK [Run a command] *****************************************************************************************
+changed: [127.0.0.1]
+changed: [localhost]
+
+TASK [Clear dirs] ********************************************************************************************
+changed: [127.0.0.1] => (item=dir1)
+changed: [localhost] => (item=dir1)
+changed: [localhost] => (item=dir2)
+ok: [127.0.0.1] => (item=dir2)
+changed: [localhost] => (item=dir3)
+ok: [127.0.0.1] => (item=dir3)
+changed: [127.0.0.1] => (item=dir4)
+ok: [localhost] => (item=dir4)
+changed: [127.0.0.1] => (item=dir5)
+ok: [localhost] => (item=dir5)
+
+TASK [Make dirs] *********************************************************************************************
+ok: [127.0.0.1] => (item=dir1)
+changed: [localhost] => (item=dir1)
+ok: [127.0.0.1] => (item=dir2)
+changed: [localhost] => (item=dir2)
+ok: [localhost] => (item=dir3)
+changed: [127.0.0.1] => (item=dir3)
+changed: [127.0.0.1] => (item=dir4)
+ok: [localhost] => (item=dir4)
+ok: [localhost] => (item=dir5)
+changed: [127.0.0.1] => (item=dir5)
+
+PLAY RECAP ***************************************************************************************************
+127.0.0.1                  : ok=8    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=8    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+ansible-playbook -i ansible_hosts playbook_module.yml
++ ansible-playbook -i ansible_hosts playbook_module.yml
+[WARNING]: A duplicate localhost-like entry was found (localhost). First found localhost was 127.0.0.1
+
+PLAY [myhosts] ***********************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+[WARNING]: Platform darwin on host 127.0.0.1 is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [127.0.0.1]
+[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+
+TASK [aRole : Hello-Goodbye] *********************************************************************************
+ok: [127.0.0.1] => {
+    "msg": "Hello and goodbye"
+}
+ok: [localhost] => {
+    "msg": "Hello and goodbye"
+}
+
+TASK [aRole : Install GEM] ***********************************************************************************
+ok: [localhost]
+ok: [127.0.0.1]
+
+TASK [aRole : Install template] ******************************************************************************
+ok: [localhost]
+ok: [127.0.0.1]
+
+TASK [aRole : shell] *****************************************************************************************
+changed: [localhost]
+changed: [127.0.0.1]
+
+TASK [Exterminate-1] *****************************************************************************************
+ok: [127.0.0.1]
+ok: [localhost]
+
+TASK [Extermined-by] *****************************************************************************************
+ok: [127.0.0.1] => {
+    "msg": {
+        "changed": false,
+        "failed": false,
+        "msg": [
+            "You have been exterminated killed by an insane chainsaw",
+            " via the-controller"
+        ]
+    }
+}
+ok: [localhost] => {
+    "msg": {
+        "changed": false,
+        "failed": false,
+        "msg": [
+            "You have been exterminated killed by an insane chainsaw",
+            " via the-controller"
+        ]
+    }
+}
+
+TASK [Exterminate-2] *****************************************************************************************
+changed: [127.0.0.1]
+changed: [localhost]
+
+TASK [Extermined-by] *****************************************************************************************
+ok: [127.0.0.1] => {
+    "msg": {
+        "changed": true,
+        "failed": false,
+        "msg": [
+            "You have been exterminated killed by a Darlek",
+            " via the-controller"
+        ]
+    }
+}
+ok: [localhost] => {
+    "msg": {
+        "changed": true,
+        "failed": false,
+        "msg": [
+            "You have been exterminated killed by a Darlek",
+            " via the-controller"
+        ]
+    }
+}
+
+PLAY RECAP ***************************************************************************************************
+127.0.0.1                  : ok=9    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=9    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+ansible-playbook -i ansible_hosts playbook_rc.yml
++ ansible-playbook -i ansible_hosts playbook_rc.yml
+[WARNING]: A duplicate localhost-like entry was found (localhost). First found localhost was 127.0.0.1
+
+PLAY [myhosts] ***********************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+[WARNING]: Platform darwin on host 127.0.0.1 is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [127.0.0.1]
+[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+
+TASK [Run a command] *****************************************************************************************
+changed: [127.0.0.1]
+changed: [localhost]
+
+TASK [Show output] *******************************************************************************************
+ok: [127.0.0.1] => {
+    "msg": "Return code was 0, Output stdout was Applications\nHotaru-chan\nLibrary\nSystem\nUsers\nVolumes\nbin\ncores\ndev\netc\nhome\nopt\nprivate\nsbin\ntmp\nusr\nvar"
+}
+ok: [localhost] => {
+    "msg": "Return code was 0, Output stdout was Applications\nHotaru-chan\nLibrary\nSystem\nUsers\nVolumes\nbin\ncores\ndev\netc\nhome\nopt\nprivate\nsbin\ntmp\nusr\nvar"
+}
+
+TASK [Show output filters] ***********************************************************************************
+fatal: [127.0.0.1]: FAILED! => {"msg": "template error while templating string: no filter named 'success'. String: Return code was {{ outputReg|success }}"}
+fatal: [localhost]: FAILED! => {"msg": "template error while templating string: no filter named 'success'. String: Return code was {{ outputReg|success }}"}
+
+PLAY RECAP ***************************************************************************************************
+127.0.0.1                  : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=3    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+
+
+ansible-playbook -i ansible_hosts playbook_nestedloops.yml
++ ansible-playbook -i ansible_hosts playbook_nestedloops.yml
+[WARNING]: A duplicate localhost-like entry was found (localhost). First found localhost was 127.0.0.1
+
+PLAY [myhosts] ***********************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+[WARNING]: Platform darwin on host 127.0.0.1 is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [127.0.0.1]
+[WARNING]: Platform darwin on host localhost is using the discovered Python interpreter at /usr/bin/python,
+but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+ok: [localhost]
+
+TASK [Run nested commands] ***********************************************************************************
+changed: [127.0.0.1] => (item=['a', 1, 'd'])
+changed: [localhost] => (item=['a', 1, 'd'])
+changed: [localhost] => (item=['a', 1, 'e'])
+changed: [127.0.0.1] => (item=['a', 1, 'e'])
+changed: [localhost] => (item=['a', 1, 'f'])
+changed: [127.0.0.1] => (item=['a', 1, 'f'])
+changed: [localhost] => (item=['a', 2, 'd'])
+changed: [127.0.0.1] => (item=['a', 2, 'd'])
+changed: [localhost] => (item=['a', 2, 'e'])
+changed: [127.0.0.1] => (item=['a', 2, 'e'])
+changed: [localhost] => (item=['a', 2, 'f'])
+changed: [127.0.0.1] => (item=['a', 2, 'f'])
+changed: [localhost] => (item=['a', 3, 'd'])
+changed: [127.0.0.1] => (item=['a', 3, 'd'])
+changed: [localhost] => (item=['a', 3, 'e'])
+changed: [127.0.0.1] => (item=['a', 3, 'e'])
+changed: [127.0.0.1] => (item=['a', 3, 'f'])
+changed: [localhost] => (item=['a', 3, 'f'])
+changed: [127.0.0.1] => (item=['b', 1, 'd'])
+changed: [localhost] => (item=['b', 1, 'd'])
+changed: [127.0.0.1] => (item=['b', 1, 'e'])
+changed: [localhost] => (item=['b', 1, 'e'])
+changed: [localhost] => (item=['b', 1, 'f'])
+changed: [127.0.0.1] => (item=['b', 1, 'f'])
+changed: [localhost] => (item=['b', 2, 'd'])
+changed: [127.0.0.1] => (item=['b', 2, 'd'])
+changed: [127.0.0.1] => (item=['b', 2, 'e'])
+changed: [localhost] => (item=['b', 2, 'e'])
+changed: [127.0.0.1] => (item=['b', 2, 'f'])
+changed: [localhost] => (item=['b', 2, 'f'])
+changed: [127.0.0.1] => (item=['b', 3, 'd'])
+changed: [localhost] => (item=['b', 3, 'd'])
+changed: [localhost] => (item=['b', 3, 'e'])
+changed: [127.0.0.1] => (item=['b', 3, 'e'])
+changed: [localhost] => (item=['b', 3, 'f'])
+changed: [127.0.0.1] => (item=['b', 3, 'f'])
+changed: [localhost] => (item=['c', 1, 'd'])
+changed: [127.0.0.1] => (item=['c', 1, 'd'])
+changed: [127.0.0.1] => (item=['c', 1, 'e'])
+changed: [localhost] => (item=['c', 1, 'e'])
+changed: [127.0.0.1] => (item=['c', 1, 'f'])
+changed: [localhost] => (item=['c', 1, 'f'])
+changed: [localhost] => (item=['c', 2, 'd'])
+changed: [127.0.0.1] => (item=['c', 2, 'd'])
+changed: [localhost] => (item=['c', 2, 'e'])
+changed: [127.0.0.1] => (item=['c', 2, 'e'])
+changed: [localhost] => (item=['c', 2, 'f'])
+changed: [127.0.0.1] => (item=['c', 2, 'f'])
+changed: [localhost] => (item=['c', 3, 'd'])
+changed: [127.0.0.1] => (item=['c', 3, 'd'])
+changed: [localhost] => (item=['c', 3, 'e'])
+changed: [127.0.0.1] => (item=['c', 3, 'e'])
+changed: [127.0.0.1] => (item=['c', 3, 'f'])
+changed: [localhost] => (item=['c', 3, 'f'])
+
+PLAY [localhost] *********************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************
+ok: [localhost]
+
+TASK [Only run command on localhost] *************************************************************************
+changed: [localhost] => (item=['listVars', 2])
+changed: [localhost] => (item=['listVars', 3])
+changed: [localhost] => (item=['listVars', 4])
+
+PLAY RECAP ***************************************************************************************************
+127.0.0.1                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=4    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
