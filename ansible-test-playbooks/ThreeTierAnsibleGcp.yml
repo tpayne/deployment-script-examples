@@ -1,0 +1,303 @@
+# Create a 3 tier project in GCP - using Bastion host design.
+
+# Tier 1 - Internet facing GCE instance contained in a VPC. Need to access with valid GCLOUD COMPUTE SSH account
+# Tier 2 - Business layer - non-internet facing - only accessible from tier 1 VPC. Need to access with valid GCLOUD COMPUTE SSH account
+# Tier 3 - DB layer - non-internet facing - only accessible from tier 2 VPC. Need to access with valid GCLOUD COMPUTE SSH account
+
+# Pre-requisites...
+# Install Ansible - pip install ansible
+# Install Ansible packages - ansible-galaxy collection install google.cloud
+# 
+---
+- hosts: localhost
+  vars_prompt:
+    - name: projectName
+      prompt: "GCP Project Name"
+      default: "macro-mender-279016"  
+
+    - name: regionName
+      prompt: "GCP Region Name"
+      default: europe-west1  
+
+    - name: credFileName
+      prompt: "Service Account cred file"
+      default: ./accesskey.json  
+  vars:
+    uidString: "{{ansible_date_time.epoch}}"
+
+  tasks:
+    # 
+    # Create 3 isolated VPCs for the resources - with a regional subnet...
+    # 
+    - name: Create Frontend network
+      google.cloud.gcp_compute_network:
+        name: threetiergroupfrontend
+        auto_create_subnetworks: true
+        project: "{{ projectName }}"
+        auth_kind: application
+        state: present
+      register: frontendNetworkName
+
+    - name: Create Frontend subnetwork
+      google.cloud.gcp_compute_subnetwork:
+        name: "frontend"
+        region:  "{{regionName}}"
+        network: "{{ frontendNetworkName }}"
+        ip_cidr_range: 10.1.0.0/24
+        project: "{{ projectName }}"
+        auth_kind: application
+        state: present
+      register: webSubnetName
+
+    - name: Create Backend CPU network
+      google.cloud.gcp_compute_network:
+        name: threetiergroupbackend-cpu
+        auto_create_subnetworks: false
+        project: "{{ projectName }}"
+        auth_kind: application
+        state: present
+      register: networkName
+
+    - name: Create Backend CPU subnetwork
+      google.cloud.gcp_compute_subnetwork:
+        name: "backend-cpu"
+        region:  "{{regionName}}"
+        network: "{{ networkName }}"
+        ip_cidr_range: 10.2.0.0/24
+        project: "{{ projectName }}"
+        auth_kind: application
+        state: present
+      register: cpuSubnetName
+
+    - name: Create Backend DB network
+      google.cloud.gcp_compute_network:
+        name: threetiergroupbackend-db
+        auto_create_subnetworks: false
+        project: "{{ projectName }}"
+        auth_kind: application
+        state: present
+      register: networkName
+
+    - name: Create Backend DB subnetwork
+      google.cloud.gcp_compute_subnetwork:
+        name: "backend-db"
+        region:  "{{regionName}}"
+        network: "{{ networkName }}"
+        ip_cidr_range: 10.3.0.0/24
+        project: "{{ projectName }}"
+        auth_kind: application
+        state: present
+      register: dbSubnetName
+
+    # 
+    # Setup the peering & firewalls between the VPCs...
+    # - External load balancers not really supported with GCP cli or Ansible, so will use Bastion host design instead
+    - name: Create VPC settings (not supported with Ansible, so need to use gcloud)
+      shell: gcloud beta compute networks peerings list 
+      register: fwList
+
+    - shell: 
+        cmd: gcloud beta compute networks peerings create vpcpeer-cpu-db 
+                --network=threetiergroupbackend-cpu 
+                --peer-network=threetiergroupbackend-db 
+                --peer-project={{projectName}} 
+                --project={{projectName}}
+      register: cmdOutputTxt
+      when: fwList.stdout.find('vpcpeer-cpu-db') == -1
+
+    - shell: 
+        cmd: gcloud beta compute networks peerings create vpcpeer-db-cpu 
+                --network=threetiergroupbackend-db 
+                --peer-network=threetiergroupbackend-cpu 
+                --peer-project={{projectName}} 
+                --project={{projectName}}
+      register: cmdOutputTxt
+      when: fwList.stdout.find('vpcpeer-db-cpu') == -1
+
+    - shell: 
+        cmd: gcloud beta compute networks peerings create vpcpeer-frontend-cpu 
+                --network=threetiergroupfrontend
+                --peer-network=threetiergroupbackend-cpu 
+                --peer-project={{projectName}} 
+                --project={{projectName}}
+      register: cmdOutputTxt
+      when: fwList.stdout.find('vpcpeer-frontend-cpu') == -1
+
+    - shell: 
+        cmd: gcloud beta compute networks peerings create vpcpeer-cpu-frontend 
+                --network=threetiergroupbackend-cpu 
+                --peer-network=threetiergroupfrontend
+                --peer-project={{projectName}} 
+                --project={{projectName}}
+      register: cmdOutputTxt
+      when: fwList.stdout.find('vpcpeer-cpu-frontend') == -1
+
+    - name: Create VPC firewall settings (not really supported with Ansible, so need to use gcloud)
+      shell: gcloud compute firewall-rules list 
+      register: fwList
+
+    - shell: 
+        cmd: gcloud compute --project={{projectName}} firewall-rules create firewall-cpu-db 
+                --direction=INGRESS --priority=1000 --network=threetiergroupbackend-db 
+                --action=ALLOW --rules=tcp:22,tcp:3306 --source-ranges=10.2.0.0/24
+      register: cmdOutputTxt
+      when: fwList.stdout.find('firewall-cpu-db') == -1
+
+    - shell: 
+        cmd: gcloud compute --project={{projectName}} firewall-rules create firewall-db-cpu
+                --direction=INGRESS --priority=1000 --network=threetiergroupbackend-cpu 
+                --action=ALLOW --rules=tcp:22 --source-ranges=10.3.0.0/24
+      register: cmdOutputTxt
+      when: fwList.stdout.find('firewall-db-cpu') == -1
+
+    - shell: 
+        cmd: gcloud compute --project={{projectName}} firewall-rules create firewall-frontend-cpu
+                --direction=INGRESS --priority=1000 --network=threetiergroupbackend-cpu 
+                --action=ALLOW --rules=tcp:22 --source-ranges=10.0.0.0/8
+      register: cmdOutputTxt
+      when: fwList.stdout.find('firewall-frontend-cpu') == -1
+
+    - shell: 
+        cmd: gcloud compute --project={{projectName}} firewall-rules create firewall-frontend
+                --direction=INGRESS --priority=1000 --network=threetiergroupfrontend 
+                --action=ALLOW --rules=tcp:22,tcp:80 --source-ranges=0.0.0.0/0
+      register: cmdOutputTxt
+      when: fwList.stdout.find('firewall-frontend') == -1
+
+    # 
+    # Create an frontend instance group for the frontend tier...
+    # 
+    - name: Create Frontend Instance Template
+      google.cloud.gcp_compute_instance_template:
+        name: frontend-template
+        properties:
+          disks:
+          - auto_delete: 'true'
+            boot: 'true'
+            initialize_params:
+              source_image: projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts
+          machine_type: f1-micro
+          network_interfaces:
+          - network: "{{ frontendNetworkName }}"
+            access_configs:
+            - name: test-config
+              type: ONE_TO_ONE_NAT
+          metadata:
+            startup-script: "#!/bin/bash\napt update && apt-get install nginx php -y"
+        project: "{{ projectName }}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ credFileName }}"
+        state: present
+      register: templateName
+
+    - name: Create Frontend Instance Group
+      google.cloud.gcp_compute_instance_group_manager:
+        name: frontend-cpuinst
+        base_instance_name: frontend-cpuinst
+        instance_template: "{{ templateName }}"
+        target_size: 3
+        zone: "{{regionName}}-b"
+        project: "{{projectName}}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ credFileName }}"
+        state: present
+      register: instanceCpuName
+
+    # 
+    # Create an CPU instance group for the business logic...
+    # 
+    - name: Create Backend Instance Template
+      google.cloud.gcp_compute_instance_template:
+        name: cpu-template
+        properties:
+          disks:
+          - auto_delete: 'true'
+            boot: 'true'
+            initialize_params:
+              source_image: projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts
+          machine_type: n1-standard-1
+          network_interfaces:
+          - subnetwork: "{{ cpuSubnetName }}"
+        project: "{{ projectName }}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ credFileName }}"
+        state: present
+      register: templateName
+
+    - name: Create Backend Instance Group
+      google.cloud.gcp_compute_instance_group_manager:
+        name: backend-cpuinst
+        base_instance_name: backend-cpuinst
+        instance_template: "{{ templateName }}"
+        target_size: 3
+        zone: "{{regionName}}-b"
+        project: "{{projectName}}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ credFileName }}"
+        state: present
+
+    # 
+    # Create an CPU instance group for the DB logic...
+    # 
+    - name: Create DB Backend Instance Template
+      google.cloud.gcp_compute_instance_template:
+        name: db-template
+        properties:
+          disks:
+          - auto_delete: 'true'
+            boot: 'true'
+            initialize_params:
+              source_image: projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts
+          machine_type: n1-standard-1
+          network_interfaces:
+          - subnetwork: "{{ dbSubnetName }}"
+          metadata:
+            startup-script: "#!/bin/bash\napt update && apt-get install mysql-client php -y"
+        project: "{{ projectName }}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ credFileName }}"
+        state: present
+      register: templateName
+
+    - name: Create Backend Instance Group
+      google.cloud.gcp_compute_instance_group_manager:
+        name: backend-dbinst
+        base_instance_name: backend-dbinst
+        instance_template: "{{ templateName }}"
+        target_size: 3
+        zone: "{{regionName}}-b"
+        project: "{{projectName}}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ credFileName }}"
+        state: present
+
+    # 
+    # Create an SQL database for the data layer...
+    # 
+    - name: Create SQL instance
+      google.cloud.gcp_sql_instance:
+        name: "backend-dbinst-{{ uidString }}"
+        settings:
+          tier: db-n1-standard-1
+          ip_configuration:
+#           authorized_networks:
+#           - name: db subnet
+#             value: 10.3.0.0/24
+            require_ssl: yes
+            ipv4_enabled: yes
+        backend_type: SECOND_GEN
+        database_version: MYSQL_5_7
+        region:  "{{regionName}}"
+        project: "{{projectName}}"
+        auth_kind: application
+        state: present
+      register: instanceName
+
+    - name: Create SQL database
+      google.cloud.gcp_sql_database:
+        name: "backend-dbsqlinst3{{ uidString }}"
+        charset: utf8
+        instance: "{{ instanceName.name }}"
+        project: "{{projectName}}"
+        auth_kind: application
+        state: present
