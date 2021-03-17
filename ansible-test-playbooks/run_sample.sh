@@ -1,5 +1,8 @@
 #!/bin/sh -xv
 
+# Dump all ansible variables...
+ansible -ilocalhost,  localhost -m setup
+
 echo "Run some samples..."
 ansible-playbook -i ansible_hosts simple_playbook.yml
 ansible-playbook -i ansible_hosts playbook_batch.yml
