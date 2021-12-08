@@ -1,7 +1,8 @@
 #!/bin/sh -xv
 
 # Dump all ansible variables...
-ansible -ilocalhost,  localhost -m setup
+ansible -i ansible_hosts  localhost -m setup
+ansible -i ansible_hosts  localhost -m ping
 
 echo "Run some samples..."
 ansible-playbook -i ansible_hosts simple_playbook.yml
